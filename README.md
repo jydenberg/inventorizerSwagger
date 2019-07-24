@@ -1,2 +1,3 @@
-# inventorizerSwagger
-Trying out swagger generator with a project
+# inventorizerswaggertest
+
+Swagger api [location](./config/swagger.yaml)

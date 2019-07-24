@@ -1,0 +1,893 @@
+swagger: '2.0'
+info:
+  description: Tracker for Products, Recipes, and Orders
+  version: "Layout"
+  title: Elevated Inventory Tracker
+  # put the contact info for your development or API team
+  contact:
+    email: joshydenberg@gmail.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+  - name: technical
+    description: Requests for technical connections
+  - name: manager
+    description: Manager only Requests
+  - name: employees
+    description: Default requests available to all employees
+  - name: customer
+    description: Requests which will be available to customers
+paths:
+  /products:
+    get:
+      tags:
+      - employees
+      - technical
+      summary: gets a list of products
+      operationId: getProducts
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: productId
+        description: Id of the Product you are looking for
+        type: string
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      responses:
+        200:
+          description: List of Product(s)
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        400:
+          description: Unable to find products
+    post:
+      tags:
+      - admins
+      - employees
+      - manager
+      - technical
+      summary: adds a product
+      operationId: addProduct
+      description: Adds a product to the system'
+      produces:
+      - application/json
+      consumes: 
+      - application/json
+      parameters:
+      - in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/Product'
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+  /products/{productId}:
+    parameters:
+    - in: path
+      name: productId
+      description: Id of the Product you are looking for
+      required: true
+      type: string
+    get:
+      tags:
+      - employees
+      - technical
+      summary: gets a list of products
+      operationId: getProduct
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      responses:
+        200:
+          description: Product object
+          schema:
+            $ref: '#/definitions/Product'
+        400:
+          description: Unable to find products
+    delete:
+      tags:
+      - admins
+      - employees
+      - manager
+      - technical
+      summary: delete a product
+      operationId: deleteProduct
+      description: Adds a product to the system'
+      produces:
+      - application/json
+      consumes: 
+      - application/json
+      responses:
+        200:
+          description: Product object that was deleted
+          schema:
+            $ref: '#/definitions/Product'
+        400:
+          description: invalid input, object invalid
+        409:
+          description: unable to delete object
+    put:
+      tags:
+      - employees
+      - technical
+      summary: Edit a specific product
+      operationId: editProduct
+      description: Edit a specific product
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      - in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/Product'
+      responses:
+        200:
+          description: Product object
+          schema:
+            $ref: '#/definitions/Product'
+        400:
+          description: Unable to find products
+  /products/{productId}/recipes:
+    parameters:
+    - in: path
+      name: productId
+      description: Id of the Product you are looking for
+      required: true
+      type: string
+    get:
+      tags:
+      - employees
+      - technical
+      summary: Retreives the recipe for a specific product
+      operationId: searchRecipeByProduct
+      description: Retreives the recipe for a specific product
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      responses:
+        200:
+          description: Found Valid list of products
+          schema:
+            $ref: '#/definitions/Recipe'
+        400:
+          description: Unable to find valid product
+    delete:
+      tags:
+      - admins
+      - technical
+      summary: Removes a Product from a recipe
+      operationId: DeleteProduct
+      description: Deletes an item to the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: productId
+        description: Id of the product to Delete
+        type: string
+      responses:
+        200:
+          description: Deleted Recipe from Product
+          schema:
+            type: object
+            properties:
+              recipeId:
+                type: string
+              productId:
+                type: string
+        400:
+          description: invalid input, object does not exist
+    put:
+      tags:
+      - employees
+      - technical
+      summary: Retreives the recipe for a specific product
+      operationId: editRecipeByProduct
+      description: Retreives the recipe for a specific product
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      responses:
+        200:
+          description: Edited Recipe for productId
+          schema:
+            type: object
+            properties:
+              productId:
+                type : string
+              recipe:
+                $ref: '#/definitions/Recipe'
+        400:
+          description: Unable to find valid product
+  /recipes:
+    get:
+      tags:
+      - employees
+      - technical
+      summary: Lists recipes
+      operationId: listRecipes
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: recipeId
+        type: string
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      - in: query
+        name: recipe
+        type : string
+      responses:
+        200:
+          description: Found Valid list of Recipes
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Recipe'
+        400:
+          description: Unable to find recipes
+    post:
+      tags:
+      - admins
+      - employees
+      - manager
+      - technical
+      summary: adds a Recipe
+      operationId: addRecipe
+      description: Adds a recipe to the system'
+      produces:
+      - application/json
+      consumes: 
+      - application/json
+      parameters:
+      - in: body
+        name: recipe
+        schema:
+          $ref: '#/definitions/Recipe'
+      responses:
+        201:
+          description: recipe created
+          schema:
+            $ref: '#/definitions/Recipe'
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+  /recipes/{recipeId}:
+    parameters:
+    - in: path
+      name: recipeId
+      description: Id of the Recipe you are looking for
+      required: true
+      type: string
+    get:
+      tags:
+      - employees
+      - technical
+      summary: Retreives a List of materials for the provided recipeIds
+      operationId: searchRecipes
+      description: Search for a specific recipe
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      responses:
+        200:
+          description: Found recipe(s)
+          schema:
+            type: object
+            properties:
+              recipeId:
+                type : string
+              materials:
+                type: array
+                items:
+                  $ref: '#/definitions/Material'
+        400:
+          description: Unable to find valid recipe
+    put:
+      tags:
+      - employees
+      - technical
+      summary: Edit a specific recipe
+      operationId: editRecipe
+      description: Edit a specific recipe
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      - in: body
+        name: materialIds
+        description: list of materialIds 
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        200:
+          description: recipe object
+          schema:
+            $ref: '#/definitions/Recipe'
+        400:
+          description: Unable to find recipes
+    delete:
+      tags:
+      - admins
+      - employees
+      - manager
+      - technical
+      summary: delete a recipe
+      operationId: deleteRecipe
+      description: Deletes a recipe from the system
+      produces:
+      - application/json
+      consumes: 
+      - application/json
+      responses:
+        200:
+          description: recipe object that was deleted
+          schema:
+            $ref: '#/definitions/Recipe'
+        400:
+          description: invalid input, object invalid
+        409:
+          description: unable to delete object
+  /materials:
+    get:
+      tags:
+      - employees
+      - technical
+      summary: gets a list of recipes
+      operationId: getMaterials
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: recipeId
+        description: listRecipes 
+        type: string
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      responses:
+        200:
+          description: List of material(s)
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Material'
+        400:
+          description: Unable to find materials
+    post:
+      tags:
+      - admins
+      - employees
+      - manager
+      - technical
+      summary: adds a Material
+      operationId: addMaterial
+      description: Adds a material to the system
+      produces:
+      - application/json
+      consumes: 
+      - application/json
+      parameters:
+      - in: body
+        name: material
+        required: true
+        schema:
+          $ref: '#/definitions/Material'
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+  /materials/{materialId}:
+    parameters:
+    - in: path
+      name: materialId
+      description: Id of the Recipe you are looking for
+      required: true
+      type: string
+    get:
+      tags:
+      - employees
+      - technical
+      summary: Retreives a List of recipes, or a specific recipe
+      operationId: getMaterial
+      description: Search for a specific recipe
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      - in: query
+        name: recipeId
+        description: maximum number of records to return
+        type: string
+      responses:
+        200:
+          description: Found a Valid material
+        400:
+          description: Unable to find valid material
+    delete:
+      tags:
+      - admins
+      - technical
+      summary: deletes an inventory item
+      operationId: deleteMaterial
+      description: Deletes an item to the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object does not exist
+    put:
+      tags:
+      - employees
+      - technical
+      summary: Edit a specific material
+      operationId: editMaterial
+      description: Edit a specific material
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      - in: body
+        name: material
+        required: true
+        schema:
+          $ref: '#/definitions/Material'
+      responses:
+        200:
+          description: Material object
+          schema:
+            $ref: '#/definitions/Material'
+        400:
+          description: Unable to find materials
+  /recipes/{recipeId}/material:
+    parameters:
+    - in: path
+      name: recipeId
+      description: Id of the recipe you are looking for
+      required: true
+      type: string
+    get:
+      tags:
+      - employees
+      - technical
+      summary: Retreives the materials for a specific recipe
+      operationId: searchMaterialByRecipe
+      description: Retreives the material for a specific recipe
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      responses:
+        200:
+          description: Found Valid list of recipes
+          schema:
+            $ref: '#/definitions/Material'
+        400:
+          description: Unable to find valid recipe
+    delete:
+      tags:
+      - admins
+      - technical
+      summary: Removes a recipe from a material
+      operationId: DeleteRecipe
+      description: Deletes an item to the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: recipeId
+        description: Id of the recipe to Delete
+        type: string
+      responses:
+        200:
+          description: Deleted material from recipe
+          schema:
+            type: object
+            properties:
+              recipeId:
+                type: string
+              productId:
+                type: string
+        400:
+          description: invalid input, object does not exist
+    put:
+      tags:
+      - employees
+      - technical
+      summary: Retreives the material for a specific recipe
+      operationId: editRecipeByRecipe
+      description: Retreives the material for a specific recipe
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      responses:
+        200:
+          description: Edited material for recipeId
+          schema:
+            type: object
+            properties:
+              recipeId:
+                type : string
+              material:
+                $ref: '#/definitions/Material'
+        400:
+          description: Unable to find valid recipe
+definitions:
+  Product:
+    type: object
+    required:
+    - productId
+    - name
+    - unit
+    - category
+    properties:
+      productId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      recipeId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: "Herbal Essences"
+      sizes:
+        type: array
+        xml:
+          name: size
+          wrapped: true
+        items:
+          $ref: '#/definitions/Size'
+      unit:
+        type: string
+        example: 2016-08-29T09:12:33.001Z
+      category:
+        type: string
+        example: Shampoos
+  Size:  
+    type: object
+    properties:
+      size:
+        type: integer 
+        format: int64
+      unit:
+        type: string
+  Recipe:
+    type: object
+    required:
+    - recipeId
+    - unit
+    - material
+    - value
+    properties:
+      productId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      recipeId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      materials:
+        type : object
+        items:
+          $ref: '#/definitions/MaterialContract'
+      unit:
+        type: string
+        example: 2016-08-29T09:12:33.001Z
+      value:
+        type: number
+  Customer:
+    type: object
+    required:
+    - businessName
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber1:
+        type: string
+      phoneNumber2:
+        type: string
+      address:
+        type: string
+      postalCode:
+        type: string
+      businessName:
+        type: string
+      shippingAddress:
+        type: string
+      shippingPostalCode:
+        type: string
+  MaterialContract:
+    type: object
+    properties:
+      materialId:
+        type: string
+      name:
+        type: string
+      input:
+        type: number
+      unit:
+        type: string
+  Material:
+    type: object
+    properties:
+      materialId:
+        type: string
+      name:
+        type: string
+      stockQuanitity:
+        type: number
+      unit:
+        type: string
+      supplierId:
+        type: string
+  Supplier:
+    type: object
+    properties:
+      supplierId:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber1:
+        type: string
+      phoneNumber2:
+        type: string
+      address:
+        type: string
+      postalCode:
+        type: string
+      businessName:
+        type: string
+  Order:
+    type: object
+    properties:
+      orderId:
+        type: string
+      customerId:
+        type: string
+      reservedProducts:
+        type: array
+        items:
+          type: object
+          properties:
+            category:
+              type: string
+            quantity:
+              type: number
+            id:
+              type: string
+      reservedMaterials:
+        type: array
+        items:
+          type: object
+          properties:
+            category:
+              type: string
+            quantity:
+              type: number
+            id:
+              type: string  
+      
+
+  
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /yjosh/ElevatedV3/1.0.0
+schemes:
+ - https

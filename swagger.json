@@ -1,0 +1,1165 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Tracker for Products, Recipes, and Orders",
+    "version" : "Layout",
+    "title" : "Elevated Inventory Tracker",
+    "contact" : {
+      "email" : "joshydenberg@gmail.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/yjosh/ElevatedV3/1.0.0",
+  "tags" : [ {
+    "name" : "technical",
+    "description" : "Requests for technical connections"
+  }, {
+    "name" : "manager",
+    "description" : "Manager only Requests"
+  }, {
+    "name" : "employees",
+    "description" : "Default requests available to all employees"
+  }, {
+    "name" : "customer",
+    "description" : "Requests which will be available to customers"
+  } ],
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/products" : {
+      "get" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "gets a list of products",
+        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "operationId" : "getProducts",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "productId",
+          "in" : "query",
+          "description" : "Id of the Product you are looking for",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of Product(s)",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Product"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Unable to find products"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "admins", "employees", "manager", "technical" ],
+        "summary" : "adds a product",
+        "description" : "Adds a product to the system'",
+        "operationId" : "addProduct",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "product",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Product"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/products/{productId}" : {
+      "get" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "gets a list of products",
+        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "operationId" : "getProduct",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "productId",
+          "in" : "path",
+          "description" : "Id of the Product you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Product object",
+            "schema" : {
+              "$ref" : "#/definitions/Product"
+            }
+          },
+          "400" : {
+            "description" : "Unable to find products"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Edit a specific product",
+        "description" : "Edit a specific product",
+        "operationId" : "editProduct",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "productId",
+          "in" : "path",
+          "description" : "Id of the Product you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "in" : "body",
+          "name" : "product",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Product"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Product object",
+            "schema" : {
+              "$ref" : "#/definitions/Product"
+            }
+          },
+          "400" : {
+            "description" : "Unable to find products"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "admins", "employees", "manager", "technical" ],
+        "summary" : "delete a product",
+        "description" : "Adds a product to the system'",
+        "operationId" : "deleteProduct",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "productId",
+          "in" : "path",
+          "description" : "Id of the Product you are looking for",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Product object that was deleted",
+            "schema" : {
+              "$ref" : "#/definitions/Product"
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "unable to delete object"
+          }
+        }
+      }
+    },
+    "/products/{productId}/recipes" : {
+      "get" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Retreives the recipe for a specific product",
+        "description" : "Retreives the recipe for a specific product By passing in the appropriate options, you can search for available inventory in the system",
+        "operationId" : "searchRecipeByProduct",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "productId",
+          "in" : "path",
+          "description" : "Id of the Product you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Found Valid list of products",
+            "schema" : {
+              "$ref" : "#/definitions/Recipe"
+            }
+          },
+          "400" : {
+            "description" : "Unable to find valid product"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Retreives the recipe for a specific product",
+        "description" : "Retreives the recipe for a specific product By passing in the appropriate options, you can search for available inventory in the system",
+        "operationId" : "editRecipeByProduct",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "productId",
+          "in" : "path",
+          "description" : "Id of the Product you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Edited Recipe for productId",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "productId" : {
+                  "type" : "string"
+                },
+                "recipe" : {
+                  "$ref" : "#/definitions/Recipe"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Unable to find valid product"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "admins", "technical" ],
+        "summary" : "Removes a Product from a recipe",
+        "description" : "Deletes an item to the system",
+        "operationId" : "DeleteProduct",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "productId",
+          "in" : "path",
+          "description" : "Id of the Product you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "productId",
+          "in" : "query",
+          "description" : "Id of the product to Delete",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Deleted Recipe from Product",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "recipeId" : {
+                  "type" : "string"
+                },
+                "productId" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object does not exist"
+          }
+        }
+      }
+    },
+    "/recipes" : {
+      "get" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Lists recipes",
+        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "operationId" : "listRecipes",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "recipe",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Found Valid list of Recipes",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Recipe"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Unable to find recipes"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "admins", "employees", "manager", "technical" ],
+        "summary" : "adds a Recipe",
+        "description" : "Adds a recipe to the system'",
+        "operationId" : "addRecipe",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "recipe",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Recipe"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "recipe created",
+            "schema" : {
+              "$ref" : "#/definitions/Recipe"
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/recipes/{recipeId}" : {
+      "get" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Retreives a List of materials for the provided recipeIds",
+        "description" : "Search for a specific recipe By passing in the appropriate options, you can search for available inventory in the system",
+        "operationId" : "searchRecipes",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "description" : "Id of the Recipe you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Found recipe(s)",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "recipeId" : {
+                  "type" : "string"
+                },
+                "materials" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/Material"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Unable to find valid recipe"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Edit a specific recipe",
+        "description" : "Edit a specific recipe",
+        "operationId" : "editRecipe",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "description" : "Id of the Recipe you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "in" : "body",
+          "name" : "materialIds",
+          "description" : "list of materialIds",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "recipe object",
+            "schema" : {
+              "$ref" : "#/definitions/Recipe"
+            }
+          },
+          "400" : {
+            "description" : "Unable to find recipes"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "admins", "employees", "manager", "technical" ],
+        "summary" : "delete a recipe",
+        "description" : "Deletes a recipe from the system",
+        "operationId" : "deleteRecipe",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "description" : "Id of the Recipe you are looking for",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "recipe object that was deleted",
+            "schema" : {
+              "$ref" : "#/definitions/Recipe"
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "unable to delete object"
+          }
+        }
+      }
+    },
+    "/materials" : {
+      "get" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "gets a list of recipes",
+        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "operationId" : "getMaterials",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "query",
+          "description" : "listRecipes",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of material(s)",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Material"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Unable to find materials"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "admins", "employees", "manager", "technical" ],
+        "summary" : "adds a Material",
+        "description" : "Adds a material to the system",
+        "operationId" : "addMaterial",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "material",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Material"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/materials/{materialId}" : {
+      "get" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Retreives a List of recipes, or a specific recipe",
+        "description" : "Search for a specific recipe By passing in the appropriate options, you can search for available inventory in the system",
+        "operationId" : "getMaterial",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "materialId",
+          "in" : "path",
+          "description" : "Id of the Recipe you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "recipeId",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Found a Valid material"
+          },
+          "400" : {
+            "description" : "Unable to find valid material"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Edit a specific material",
+        "description" : "Edit a specific material",
+        "operationId" : "editMaterial",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "materialId",
+          "in" : "path",
+          "description" : "Id of the Recipe you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "in" : "body",
+          "name" : "material",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Material"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Material object",
+            "schema" : {
+              "$ref" : "#/definitions/Material"
+            }
+          },
+          "400" : {
+            "description" : "Unable to find materials"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "admins", "technical" ],
+        "summary" : "deletes an inventory item",
+        "description" : "Deletes an item to the system",
+        "operationId" : "deleteMaterial",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "materialId",
+          "in" : "path",
+          "description" : "Id of the Recipe you are looking for",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object does not exist"
+          }
+        }
+      }
+    },
+    "/recipes/{recipeId}/material" : {
+      "get" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Retreives the materials for a specific recipe",
+        "description" : "Retreives the material for a specific recipe By passing in the appropriate options, you can search for available inventory in the system",
+        "operationId" : "searchMaterialByRecipe",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "description" : "Id of the recipe you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Found Valid list of recipes",
+            "schema" : {
+              "$ref" : "#/definitions/Material"
+            }
+          },
+          "400" : {
+            "description" : "Unable to find valid recipe"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "employees", "technical" ],
+        "summary" : "Retreives the material for a specific recipe",
+        "description" : "Retreives the material for a specific recipe By passing in the appropriate options, you can search for available inventory in the system",
+        "operationId" : "editRecipeByRecipe",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "description" : "Id of the recipe you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 100,
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Edited material for recipeId",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "recipeId" : {
+                  "type" : "string"
+                },
+                "material" : {
+                  "$ref" : "#/definitions/Material"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Unable to find valid recipe"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "admins", "technical" ],
+        "summary" : "Removes a recipe from a material",
+        "description" : "Deletes an item to the system",
+        "operationId" : "DeleteRecipe",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "description" : "Id of the recipe you are looking for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "recipeId",
+          "in" : "query",
+          "description" : "Id of the recipe to Delete",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Deleted material from recipe",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "recipeId" : {
+                  "type" : "string"
+                },
+                "productId" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object does not exist"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Product" : {
+      "type" : "object",
+      "required" : [ "category", "name", "productId", "unit" ],
+      "properties" : {
+        "productId" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "recipeId" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "name" : {
+          "type" : "string",
+          "example" : "Herbal Essences"
+        },
+        "sizes" : {
+          "type" : "array",
+          "xml" : {
+            "name" : "size",
+            "wrapped" : true
+          },
+          "items" : {
+            "$ref" : "#/definitions/Size"
+          }
+        },
+        "unit" : {
+          "type" : "string",
+          "example" : "2016-08-29T09:12:33.001Z"
+        },
+        "category" : {
+          "type" : "string",
+          "example" : "Shampoos"
+        }
+      }
+    },
+    "Size" : {
+      "type" : "object",
+      "properties" : {
+        "size" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "unit" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Recipe" : {
+      "type" : "object",
+      "required" : [ "recipeId", "unit", "value" ],
+      "properties" : {
+        "productId" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "recipeId" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "materials" : {
+          "type" : "object",
+          "properties" : { }
+        },
+        "unit" : {
+          "type" : "string",
+          "example" : "2016-08-29T09:12:33.001Z"
+        },
+        "value" : {
+          "type" : "number"
+        }
+      }
+    },
+    "Customer" : {
+      "type" : "object",
+      "required" : [ "businessName" ],
+      "properties" : {
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "phoneNumber1" : {
+          "type" : "string"
+        },
+        "phoneNumber2" : {
+          "type" : "string"
+        },
+        "address" : {
+          "type" : "string"
+        },
+        "postalCode" : {
+          "type" : "string"
+        },
+        "businessName" : {
+          "type" : "string"
+        },
+        "shippingAddress" : {
+          "type" : "string"
+        },
+        "shippingPostalCode" : {
+          "type" : "string"
+        }
+      }
+    },
+    "MaterialContract" : {
+      "type" : "object",
+      "properties" : {
+        "materialId" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "input" : {
+          "type" : "number"
+        },
+        "unit" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Material" : {
+      "type" : "object",
+      "properties" : {
+        "materialId" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "stockQuanitity" : {
+          "type" : "number"
+        },
+        "unit" : {
+          "type" : "string"
+        },
+        "supplierId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Supplier" : {
+      "type" : "object",
+      "properties" : {
+        "supplierId" : {
+          "type" : "string"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "phoneNumber1" : {
+          "type" : "string"
+        },
+        "phoneNumber2" : {
+          "type" : "string"
+        },
+        "address" : {
+          "type" : "string"
+        },
+        "postalCode" : {
+          "type" : "string"
+        },
+        "businessName" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Order" : {
+      "type" : "object",
+      "properties" : {
+        "orderId" : {
+          "type" : "string"
+        },
+        "customerId" : {
+          "type" : "string"
+        },
+        "reservedProducts" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Order_reservedProducts"
+          }
+        },
+        "reservedMaterials" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Order_reservedProducts"
+          }
+        }
+      }
+    },
+    "inline_response_200" : {
+      "properties" : {
+        "productId" : {
+          "type" : "string"
+        },
+        "recipe" : {
+          "$ref" : "#/definitions/Recipe"
+        }
+      }
+    },
+    "inline_response_200_1" : {
+      "properties" : {
+        "recipeId" : {
+          "type" : "string"
+        },
+        "productId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "inline_response_200_2" : {
+      "properties" : {
+        "recipeId" : {
+          "type" : "string"
+        },
+        "materials" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Material"
+          }
+        }
+      }
+    },
+    "inline_response_200_3" : {
+      "properties" : {
+        "recipeId" : {
+          "type" : "string"
+        },
+        "material" : {
+          "$ref" : "#/definitions/Material"
+        }
+      }
+    },
+    "Order_reservedProducts" : {
+      "properties" : {
+        "category" : {
+          "type" : "string"
+        },
+        "quantity" : {
+          "type" : "number"
+        },
+        "id" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}

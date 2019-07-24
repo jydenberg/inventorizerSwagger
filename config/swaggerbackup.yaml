@@ -1,0 +1,404 @@
+swagger: '2.0'
+info:
+  description: 'Tracker for Products, Recipes, and Orders'
+  version: 1.0.0
+  title: Elevated Inventory Tracker
+  contact:
+    email: joshydenberg@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: technical
+    description: Requests for technical connections
+  - name: manager
+    description: Manager only Requests
+  - name: employees
+    description: Default requests available to all employees
+  - name: customer
+    description: Requests which will be available to customers
+paths:
+  /products:
+    get:
+      tags:
+        - employees
+        - technical
+      summary: Lists Products
+      operationId: listProducts
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 100
+      responses:
+        '200':
+          description: Found Valid list of products
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        '400':
+          description: Unable to find products
+    post:
+      tags:
+        - admins
+        - employees
+        - manager
+        - technical
+      summary: adds a product
+      operationId: addProduct
+      description: Adds a product to the system'
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: product
+          schema:
+            $ref: '#/definitions/Product'
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+  '/products/{productId}/material/':
+    parameters:
+      - in: path
+        name: productId
+        description: Id of the Product you are looking for
+        required: true
+        type: string
+    get:
+      tags:
+        - employees
+        - technical
+      summary: Retreives a specific product
+      operationId: searchProducts
+      description: >-
+        Search for a specific prododuct By passing in the appropriate options,
+        you can search for available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 100
+      responses:
+        '200':
+          description: Found Valid list of products
+          schema:
+            $ref: '#/definitions/Product'
+        '400':
+          description: Unable to find valid product
+    delete:
+      tags:
+        - admins
+        - technical
+      summary: deletes an inventory item
+      operationId: DeleteProduct
+      description: Deletes an item to the system
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: productId
+          description: Id of the product to Delete
+          type: string
+      responses:
+        '200':
+          description: item created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        '400':
+          description: 'invalid input, object does not exist'
+  /recipes:
+    get:
+      tags:
+        - employees
+        - technical
+      summary: gets/Lists recipes
+      operationId: listRecipes
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: recipeId
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 100
+        - in: query
+          name: product
+          type: string
+      responses:
+        '200':
+          description: Found Valid list of Recipes
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Recipe'
+        '400':
+          description: Unable to find products
+    post:
+      tags:
+        - admins
+        - employees
+        - manager
+      summary: adds a Recipe
+      operationId: addRecipe
+      description: Adds a product to the system'
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: recipe
+          schema:
+            $ref: '#/definitions/Recipe'
+      responses:
+        '201':
+          description: item created
+          schema:
+            $ref: '#/definitions/Recipe'
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+    delete:
+      tags:
+        - technical
+      summary: Deletes multiple Recipes
+      operationId: deleteRecipes
+      parameters:
+        - in: body
+          name: recipe
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+  '/recipes/{recipeId}':
+    parameters:
+      - in: path
+        name: recipeId
+        description: Id of the Recipe you are looking for
+        required: true
+        type: string
+    get:
+      tags:
+        - employees
+      summary: Retreives a specific recipe
+      operationId: searchRecipes
+      description: >-
+        Search for a specific recipe By passing in the appropriate options, you
+        can search for available inventory in the system
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          format: int32
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 100
+      responses:
+        '200':
+          description: Found a Valid product
+        '400':
+          description: Unable to find valid product
+    delete:
+      tags:
+        - admins
+      summary: deletes an inventory item
+      operationId: Delete Recipe
+      description: Deletes an item to the system
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object does not exist'
+definitions:
+  Product:
+    type: object
+    required:
+      - productId
+      - recipeId
+      - name
+      - unit
+      - category
+    properties:
+      productId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      recipeId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: Herbal Essences
+      sizes:
+        type: array
+        xml:
+          name: size
+          wrapped: true
+        items:
+          $ref: '#/definitions/Size'
+      unit:
+        type: string
+        example: 2016-08-29T09:12:33.001Z
+      category:
+        type: string
+        example: Shampoos
+  Size:
+    type: object
+    properties:
+      size:
+        type: integer
+        format: int64
+      unit:
+        type: string
+  Recipe:
+    type: object
+    required:
+      - productId
+      - recipeId
+      - unit
+      - material
+      - value
+    properties:
+      productId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      recipeId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      material:
+        type: string
+      unit:
+        type: string
+        example: 2016-08-29T09:12:33.001Z
+      value:
+        type: number
+  Customer:
+    type: object
+    required:
+      - businessName
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber1:
+        type: string
+      phoneNumber2:
+        type: string
+      address:
+        type: string
+      postalCode:
+        type: string
+      businessName:
+        type: string
+      shippingAddress:
+        type: string
+      shippingPostalCode:
+        type: string
+  Material:
+    type: object
+    properties:
+      materialId:
+        type: string
+      name:
+        type: string
+      quanitity:
+        type: number
+      unit:
+        type: string
+  Supplier:
+    type: object
+    properties:
+      supplierId:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber1:
+        type: string
+      phoneNumber2:
+        type: string
+      address:
+        type: string
+      postalCode:
+        type: string
+      businessName:
+        type: string
+host: virtserver.swaggerhub.com
+basePath: /yjosh/ElevatedV3/1.0.0
+schemes:
+  - https
